@@ -1,16 +1,18 @@
-import { Controller, Get, Post, Res, Render, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Res, Render, Request, UseGuards, UseFilters } from '@nestjs/common';
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
 import { AuthenticatedGuard } from './common/guards/authenticated.guard'
+import { AuthExceptionFilter } from './common/filters/auth-exceptions.filter';
 
 @Controller()
+@UseFilters(AuthExceptionFilter)
 export class AppController {
 
   @Get('/')
   @Render('login')
-  index() {
-    return;
+  index(@Request() req): { message: string} {
+    return { message: req.flash('loginError')};
   }
 
   @UseGuards(LoginGuard)
